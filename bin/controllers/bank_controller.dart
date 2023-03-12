@@ -1,38 +1,34 @@
+import '../exceptions/exceptions.dart';
 import '../models/account.dart';
 
 class BankController {
-  final Map<String, Account> _database = {};
+  final Map<int, Account> _database = {};
 
   //Method to add a account to DB
-  addAccount({required String id, required Account account}) {
-    _database[id] = account;
+  addAccount({required Account account}) {
+    _database[account.id] = account;
   }
 
   //Method to transfer amount between accounts
   bool makeTransfer(
-      {required String idSender,
-      required String idReceiver,
+      {required int idSender,
+      required int idReceiver,
       required double amount}) {
     //Check if ids are valid
     if (!verifyId(idSender)) {
-      return false;
+      throw InvalidIdException(id: idSender);
     }
 
     if (!verifyId(idReceiver)) {
-      return false;
+      throw InvalidIdException(id: idReceiver);
     }
 
     Account accountSender = _database[idSender]!;
     Account accountReceiver = _database[idReceiver]!;
 
-    // Check if sender is authenticated
-    if (!accountSender.isAuthenticated) {
-      return false;
-    }
-
     // Check if sender has suficient amount
     if (accountSender.balance < amount) {
-      return false;
+      throw InsuficientFundsException(account: accountSender, amount: amount);
     }
 
     // If ok, do the transation
@@ -43,7 +39,7 @@ class BankController {
   }
 
   //Method thats checks if is a valid account
-  bool verifyId(String id) {
+  bool verifyId(int id) {
     return _database.containsKey(id);
   }
 }

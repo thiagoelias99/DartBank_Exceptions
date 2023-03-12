@@ -1,17 +1,14 @@
 class Account {
   //Parameters
+  int id;
   String name;
   double balance;
-  bool isAuthenticated;
 
   //Named, required constructor
-  Account(
-      {required this.name,
-      required this.balance,
-      required this.isAuthenticated});
+  Account({required this.id, required this.name, required this.balance});
 
   //Method
   editBalance({required value}) {
-    balance = balance + value;
+    balance += value;
   }
 }

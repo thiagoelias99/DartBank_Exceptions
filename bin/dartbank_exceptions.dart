@@ -1,4 +1,5 @@
 import 'controllers/bank_controller.dart';
+import 'exceptions/exceptions.dart';
 import 'models/account.dart';
 
 void main() {
@@ -7,22 +8,26 @@ void main() {
 
   // Add Accounts
   bankController.addAccount(
-      id: "Thiago",
-      account:
-          Account(name: "Thiago Elias", balance: 400, isAuthenticated: true));
+      account: Account(id: 1, name: "Thiago Elias", balance: 400));
 
   bankController.addAccount(
-      id: "Sara",
-      account:
-          Account(name: "Sara Costa", balance: 600, isAuthenticated: true));
+      account: Account(id: 2, name: "Sara Costa", balance: 600));
 
   bankController.addAccount(
-      id: "Bia",
-      account:
-          Account(name: "Bianca Diniz", balance: 800, isAuthenticated: false));
+      account: Account(id: 3, name: "Bianca Diniz", balance: 800));
 
   // Do transfers
-  bool result = bankController.makeTransfer(
-      idSender: "Thiago", idReceiver: "Sara", amount: 700);
-  print(result);
+  try {
+    bool result =
+        bankController.makeTransfer(idSender: 1, idReceiver: 2, amount: 700);
+    print("Transferência Realizada");
+  } on InvalidIdException catch (e) {
+    print("O id '${e.id}' não é valido");
+  } on InsuficientFundsException catch (e) {
+    print("A conta de '${e.account.name}' não possui saldo suficiente.");
+    print("Saldo atual: ${e.account.balance}");
+    print("Valor da Transferência: ${e.amount}");
+  } catch (e) {
+    print("Ocorreu um erro '${e.toString()}'");
+  }
 }
